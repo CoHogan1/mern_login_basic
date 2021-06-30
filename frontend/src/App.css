@@ -1,0 +1,89 @@
+.App {
+  text-align: center;
+  margin: auto;
+  width: 100vw;
+  height: 100vh;
+  background-image: url(background.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow-y: scroll;
+  background-position: center;
+}
+
+img {
+    border-radius: 10px;
+}
+
+.logo {
+    margin: auto;
+    width:80px;
+    height: 80px;
+}
+
+button {
+    margin: auto;
+    width: 200px;
+    border-radius: 5px;
+}
+
+button:hover {
+    border: 2px solid white;
+    background-color: green;
+    color: white;
+    transition: 0.2s smooth;
+    opacity: 0.8;
+}
+
+.login {
+    background-color: darkorange;
+}
+
+.register {
+    background-color: yellow;
+}
+
+.welcome {
+    width: 400px;
+    height: 250px;
+    border: 2px solid black;
+    border-radius: 5px;
+    background-color:  rgba(100,100,100, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.spacer {
+    height: 20px;
+}
+
+form> label {
+    background-color: rgba(250,250,250, 0.5);
+    color: black;
+    width: 80px;
+    margin: 2px;
+}
+form> input {
+    width: 200px;
+}
+.regForm {
+    padding:10px;
+    margin:auto;
+    width: 300px;
+    border: 2px solid black;
+    border-radius: 5px;
+    background-color: rgba(100,100,100, 0.7);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.registerButton {
+    margin: auto;
+    margin-top: 10px;
+    border-radius: 5px;
+    color:white;
+    background-image: linear-gradient(to left, cyan, blue, blue, cyan);
+}
