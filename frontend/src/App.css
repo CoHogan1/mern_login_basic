@@ -87,3 +87,23 @@ form> input {
     color:white;
     background-image: linear-gradient(to left, cyan, blue, blue, cyan);
 }
+
+.logForm {
+    padding:10px;
+    margin:auto;
+    width: 300px;
+    border: 2px solid black;
+    border-radius: 5px;
+    background-color: rgba(100,100,100, 0.7);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.loginButton {
+    margin: auto;
+    margin-top: 10px;
+    border-radius: 5px;
+    color:white;
+    background-image: linear-gradient(to left, lime, green, green, lime);
+}
