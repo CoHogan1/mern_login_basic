@@ -15,6 +15,8 @@ class App extends Component {
             password2: '',
             allUsers: [],
             showUsers: false,
+            err: [],
+            fail: false,
         }
     }
 
@@ -53,9 +55,7 @@ class App extends Component {
 
     regSubmit = async (event) => {
         event.preventDefault()
-        console.log(event.target)
         const url = "http://localhost:3001/users/register"
-        console.log(url)
         try{
             const registerResponse = await fetch (url, {
                 //credentials: 'include',
@@ -72,16 +72,22 @@ class App extends Component {
                 }
             })
             const parsedResponse =  await registerResponse.json()
-            console.log(parsedResponse)
-            if (registerResponse.status === 201){
+            if (registerResponse.status === 200){
                 this.setState({
                     reg: false,
                 })
             }
+            if(registerResponse.status !== 201){
+                console.log(registerResponse)
+                this.setState({
+                    err: parsedResponse.error,
+                })
+            }
         }
         catch(err){
-            console.log("Error => ", err) // login error handeling goes here.    
+            console.log("Error => ", err) // login error handeling goes here.
         }
+        //console.log(this.state.err)
     }
 
     logSubmit = async (event) => {
@@ -108,7 +114,6 @@ class App extends Component {
             if (registerResponse.status === 201){
                 this.setState({
                     log: false,
-                    //showUsers: true,
                 })
                 console.log("Successful login")
             }
@@ -128,84 +133,94 @@ class App extends Component {
     render(){
         return(
             <div className="App">
-                <div className="welcome">
-                    <div className="spacer"></div>
-                    <img className="logo" src={logo} alt={logo}/><br></br>
-                    <button className="login"    onClick={this.logClick} >Login</button><br></br>
-                    <button className="register" onClick={this.regClick}>Register</button>
-                    <div className="spacer"></div>
+            <div className="welcome">
+                <div className="spacer"></div>
+                <img className="logo" src={logo} alt={logo}/><br></br>
+                <button className="login"    onClick={this.logClick} >Login</button><br></br>
+                <button className="register" onClick={this.regClick}>Register</button>
+                <div className="spacer"></div>
 
+            </div>
+
+            {this.state.fail?
+            <div>
+                <ol className="error">{this.state.err.forEach(e=>{
+                        return(
+                            <li>{e.msg}</li>
+                        )
+                    })}
+                </ol>
+            </div> : null}
+
+            {this.state.reg ?
+                <div>
+                    <form className="regForm" onSubmit={this.regSubmit}>
+                        <label>Name:</label>
+                        <input name="name" value={this.state.name} placeholder="Any name" onChange={this.handleChange}></input>
+
+                        <label>Username:</label>
+                        <input name="username" value={this.state.username} placeholder="Any username"  onChange={this.handleChange}></input>
+
+                        <label>Email:</label>
+                        <input name="email" type="email" value={this.state.email} placeholder="example@email.com" onChange={this.handleChange}></input>
+
+                        <label>Password:</label>
+                        <input type="password" name="password" value={this.state.password} placeholder="at least 6 characters" onChange={this.handleChange}></input>
+
+                        <label>Password2:</label>
+                        <input type="password" name="password2" value={this.state.password2} placeholder="must match first password" onChange={this.handleChange}></input>
+
+
+
+                        <input className="registerButton" type="submit" value="Submit"></input>
+
+
+                    </form>
                 </div>
+                : null}
 
-                    {this.state.reg ?
-                        <div>
-                            <form className="regForm" onSubmit={this.regSubmit}>
-                                <label>Name:</label>
-                                <input name="name" value={this.state.name} onChange={this.handleChange}></input>
+                {this.state.log ?
+                    <div>
+                    <form className="logForm" onSubmit={this.logSubmit}>
+                        <label>Name:</label>
+                        <input name="name"></input>
 
-                                <label>Username:</label>
-                                <input name="username" value={this.state.username} onChange={this.handleChange}></input>
+                        <label>Username:</label>
+                        <input name="username"></input>
 
-                                <label>Email:</label>
-                                <input name="email" value={this.state.email} onChange={this.handleChange}></input>
+                        <label>Email:</label>
+                        <input name="email"></input>
 
-                                <label>Password:</label>
-                                <input type="password" name="password" value={this.state.password} onChange={this.handleChange}></input>
-
-                                <label>Password2:</label>
-                                <input type="password" name="password2" value={this.state.password2} onChange={this.handleChange}></input>
+                        <label>Password:</label>
+                        <input type="password" name="password"></input>
 
 
-
-                                <input className="registerButton" type="submit" value="Submit"></input>
-
-
-                            </form>
-                        </div>
-                        : null}
-
-                        {this.state.log ?
-                            <div>
-                            <form className="logForm" onSubmit={this.logSubmit}>
-                                <label>Name:</label>
-                                <input name="name"></input>
-
-                                <label>Username:</label>
-                                <input name="username"></input>
-
-                                <label>Email:</label>
-                                <input name="email"></input>
-
-                                <label>Password:</label>
-                                <input type="password" name="password"></input>
+                        <input className="loginButton" type="submit" value="Login"></input>
 
 
-                                <input className="loginButton" type="submit" value="Login"></input>
+                    </form>
+                    </div> : null}
 
-
-                            </form>
-                            </div> : null}
-
-                            {this.state.showUsers ?
-                            <div>
-                                <table>
-                                <tbody>
-                                    { this.state.users.map(user => {
-                                        return(
-                                            <tr key={user._id}>
-                                                <td>{user.name}</td>
-                                                <td>{user.username}</td>
-                                                <td>{user.email}</td>
-                                                <td>{user.password}</td>
-                                                <td>{user.password2}</td>
-                                            </tr>
-                                            )
-                                        })
-                                    }
-                                </tbody>
-                                </table>
-                            </div>
-                            : null}
+                    {this.state.showUsers ?
+                    <div>
+                        <table>
+                        <tbody>
+                            { this.state.users.map(user => {
+                                return(
+                                    <tr key={user._id}>
+                                        <td>{user.name}</td>
+                                        <td>{user.username}</td>
+                                        <td>{user.email}</td>
+                                        <td>{user.password}</td>
+                                        <td>{user.password2}</td>
+                                    </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                        </table>
+                    </div>
+                    : null}
             </div>
         )
     }

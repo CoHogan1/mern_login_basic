@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router()
+const bcrypt = require('bcryptjs')
+// user model
 const UserModel = require('../models/User')
 
 
@@ -15,20 +17,13 @@ router.get('/login', (req, res)=> {
 
 // register page
 router.get('/register', (req, res)=> {
-    // UserModel.find({}, (error, foundUsers)=>{
-    //     if (error) {
-    //         res.status(400).json({error: error.message})
-    //     }
-    //     res.status(200).json(foundUsers)
-    // })
     res.send("working")
 })
 
 // Post route, register new user into database.
 router.post('/register', (req, res)=>{
-    //console.log(req.body)
+    console.log(req.body)
     let { name, username, email, password, password2 } = req.body
-    console.log(name)
     let errors = []
 
     // check req fiels
@@ -47,20 +42,74 @@ router.post('/register', (req, res)=>{
     if (errors.length > 0){
         res.status(400).json({error: errors})
     } else {
-        UserModel.create(req.body, (error, createdUser) =>{
-            if (error){
-                res.status(400).json({ error: error.message})
+        // validation passes
+        console.log("validation passes")
+        UserModel.findOne({email: email}).then(user => {
+            if(user){
+                console.log("user already exists")
+                console.log(user)
+                errors.push({msg: "User already exists"})
+                res.status(400).json(user)
+            } else {
+                console.log("creating user")
+                const newUser = new UserModel({
+                    name,
+                    username,
+                    email,
+                    password,
+                    password2,
+                })
+                console.log(newUser, " before hash")
+                // hash password
+                bcrypt.genSalt(10, (err, salt) =>
+                bcrypt.hash(newUser.password, salt,(err, hash)=>{
+                    if (err) throw err;
+                    // set hash password
+                    newUser.password = hash;
+                    // save user.
+                    newUser.save()
+                    .then(user => {
+                        req.flash('success_msg', "you successfully registered!")
+                        console.log(user.password, " hashed")
+                    })
+                    .catch(err => console.log(err))
+                }))
+                res.status(200).json(newUser)
             }
-            res.status(200).json(createdUser)
         })
     }
 })
-
-
-
 
 router.get('/', (req, res)=>{
     res.send(`You're hitting the worng route. :)`)
 })
 
 module.exports = router
+
+
+
+// } else {
+//     // validation passes
+//     UserModel.findOne({email: email})
+//     .then(user => {
+//         if(user){
+//             errors.push({msg: "User already exists"})
+//         } else {
+//             const newUser = new User({
+//                 name: name,
+//                 username: username,
+//                 email: email,
+//                 password: password,
+//                 password2: password2,
+//             })
+//         }
+//
+//     })
+//
+//
+//     UserModel.create(req.body, (error, createdUser) =>{
+//         if (error){
+//             res.status(400).json({ error: error.message})
+//         }
+//         res.status(200).json(createdUser)
+//     })

@@ -107,3 +107,9 @@ form> input {
     color:white;
     background-image: linear-gradient(to left, lime, green, green, lime);
 }
+.error {
+    margin:auto;
+
+    background-color: red;
+    color:white;
+}
